@@ -23,6 +23,13 @@
           "Props": true
         }
       }
-    ]
+    ],
+    "array-callback-return": [
+      "error",
+      {
+        "allowImplicit": true
+      }
+    ],
+    "unicorn/no-useless-undefined": ["error", { "checkArguments": false }]
   }
 }
