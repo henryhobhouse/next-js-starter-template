@@ -31,5 +31,13 @@
       }
     ],
     "unicorn/no-useless-undefined": ["error", { "checkArguments": false }]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "rules": {
+        "unicorn/prefer-module": "off"
+      }
+    }
+  ]
 }
