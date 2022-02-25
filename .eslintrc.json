@@ -36,7 +36,8 @@
     {
       "files": ["*.js"],
       "rules": {
-        "unicorn/prefer-module": "off"
+        "unicorn/prefer-module": "off",
+        "@typescript-eslint/no-var-requires": "off"
       }
     }
   ]
