@@ -5,6 +5,7 @@ export default createGlobalStyle`
     font-weight: 400;
     height: 100%;
     margin: 0;
+    font-family: system-ui, sans-serif;
   }
   body {
     margin: 0;
