@@ -33,17 +33,17 @@ interface EnergyUsage {
 
 interface Props {
   electricityUsage: EnergyUsage;
-  gasUsage?: EnergyUsage;
+  gasUsage?: Partial<EnergyUsage>;
   dualFuel: boolean;
 }
 
-interface Bill {
-  gas?: number;
-  electricity: number;
-  total: number;
+export interface Bill {
+  gasPounds?: number;
+  electricityPounds: number;
+  totalPounds: number;
 }
 
-type MonthlyBills = Record<typeof MONTH_NAMES[number], Bill>;
+export type MonthlyBills = Record<typeof MONTH_NAMES[number], Bill>;
 
 const getEstimatedElectricityBill = (
   dualFuel: boolean,
@@ -76,10 +76,15 @@ const getEstimatedElectricityBill = (
 const getEstimatedGasBill = (
   dualFuel: boolean,
   monthIndex: number,
-  gasUsage?: EnergyUsage,
+  gasUsage?: Partial<EnergyUsage>,
 ) => {
   if (!dualFuel) return;
-  if (!gasUsage)
+  if (
+    !gasUsage ||
+    !gasUsage.standingChargePence ||
+    !gasUsage.annualConsumption ||
+    !gasUsage.unitRate
+  )
     throw new Error('no gas rates supplied whilst set as dual fuel');
 
   const monthlyUsageCoefficient = USAGE_BY_MONTH.Gas[monthIndex];
@@ -95,7 +100,7 @@ const getEstimatedGasBill = (
   return gasStandingCharge + gasUsageCharge;
 };
 
-export const billsMonthly = ({
+export const calculateMonthlyBills = ({
   electricityUsage,
   gasUsage,
   dualFuel,
@@ -115,9 +120,9 @@ export const billsMonthly = ({
     const monthsGasBill = getEstimatedGasBill(dualFuel, monthIndex, gasUsage);
 
     monthlyBills[monthName] = {
-      electricity: monthsElectricityBill,
-      gas: monthsGasBill,
-      total: monthsElectricityBill + (monthsGasBill ?? 0),
+      electricityPounds: monthsElectricityBill / 100,
+      gasPounds: monthsGasBill ? monthsGasBill / 100 : monthsGasBill,
+      totalPounds: (monthsElectricityBill + (monthsGasBill ?? 0)) / 100,
     };
   }
 

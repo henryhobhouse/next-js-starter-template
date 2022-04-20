@@ -29,8 +29,7 @@ const schema = yup.object({
   annualElectricityUsage: yup
     .number()
     .typeError('Annual usage must be a number')
-    .positive('must be a positive number - if zero leave empty')
-    .integer('must be an integer'),
+    .positive('must be a positive number - if zero leave empty'),
   gasStandingCharge: yup
     .number()
     .when('dualFuel', {
@@ -71,22 +70,22 @@ const schema = yup.object({
 
 const formDefaultValues = {
   dualFuel: 'false',
-  annualGasUsage: '',
-  gasRate: '',
-  gasStandingCharge: '',
-  annualElectricityUsage: '',
-  electricityRate: '',
-  electricityStandingCharge: '',
+  annualGasUsage: undefined,
+  gasRate: undefined,
+  gasStandingCharge: undefined,
+  annualElectricityUsage: undefined,
+  electricityRate: undefined,
+  electricityStandingCharge: undefined,
 } as const;
 
 export interface FormData {
   dualFuel: 'true' | 'false';
-  annualGasUsage?: string;
-  gasRate?: string;
-  gasStandingCharge?: string;
-  annualElectricityUsage: string;
-  electricityRate: string;
-  electricityStandingCharge: string;
+  annualGasUsage?: number;
+  gasRate?: number;
+  gasStandingCharge?: number;
+  annualElectricityUsage: number;
+  electricityRate: number;
+  electricityStandingCharge: number;
 }
 
 interface Props {
@@ -101,7 +100,6 @@ export const MonthlyBillsForm: FC<Props> = ({ onFormSubmit }) => {
     formState: { errors },
     formState: { dirtyFields },
     watch,
-    getValues,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     mode: 'onBlur',
@@ -140,16 +138,9 @@ export const MonthlyBillsForm: FC<Props> = ({ onFormSubmit }) => {
         <h4>Electricity:</h4>
         <TextFieldWrapper>
           <TextInput
-            {...register('electricityStandingCharge')}
-            isInvalid={!!errors.electricityStandingCharge}
-            isDirty={dirtyFields.electricityStandingCharge}
-            errorMessage={errors.electricityStandingCharge?.message}
-            label="Electricity standing charge per day in pence"
-          />
-        </TextFieldWrapper>
-        <TextFieldWrapper>
-          <TextInput
-            {...register('electricityRate')}
+            {...register('electricityRate', {
+              valueAsNumber: true,
+            })}
             isInvalid={!!errors.electricityRate}
             label="Electricity unit rate in pence per KWH"
             errorMessage={errors.electricityRate?.message}
@@ -158,7 +149,20 @@ export const MonthlyBillsForm: FC<Props> = ({ onFormSubmit }) => {
         </TextFieldWrapper>
         <TextFieldWrapper>
           <TextInput
-            {...register('annualElectricityUsage')}
+            {...register('electricityStandingCharge', {
+              valueAsNumber: true,
+            })}
+            isInvalid={!!errors.electricityStandingCharge}
+            isDirty={dirtyFields.electricityStandingCharge}
+            errorMessage={errors.electricityStandingCharge?.message}
+            label="Electricity standing charge per day in pence"
+          />
+        </TextFieldWrapper>
+        <TextFieldWrapper>
+          <TextInput
+            {...register('annualElectricityUsage', {
+              valueAsNumber: true,
+            })}
             isInvalid={!!errors.annualElectricityUsage}
             label="Electricity annual usage in KWH"
             errorMessage={errors.annualElectricityUsage?.message}
@@ -172,12 +176,19 @@ export const MonthlyBillsForm: FC<Props> = ({ onFormSubmit }) => {
           <h4>Gas:</h4>
           <TextFieldWrapper>
             <TextInput
+              {...register('gasRate', {
+                valueAsNumber: true,
+              })}
+              isInvalid={!!errors.gasRate}
+              label="Gas unit rate in pence per KWH"
+              errorMessage={errors.gasRate?.message}
+              isDirty={dirtyFields.gasRate}
+            />
+          </TextFieldWrapper>
+          <TextFieldWrapper>
+            <TextInput
               {...register('gasStandingCharge', {
-                validate: () => {
-                  const t = getValues('dualFuel');
-                  console.log(t);
-                  return t === 'true';
-                },
+                valueAsNumber: true,
               })}
               isInvalid={!!errors.gasStandingCharge}
               isDirty={dirtyFields.gasStandingCharge}
@@ -187,16 +198,9 @@ export const MonthlyBillsForm: FC<Props> = ({ onFormSubmit }) => {
           </TextFieldWrapper>
           <TextFieldWrapper>
             <TextInput
-              {...register('gasRate')}
-              isInvalid={!!errors.gasRate}
-              label="Gas unit rate in pence per KWH"
-              errorMessage={errors.gasRate?.message}
-              isDirty={dirtyFields.gasRate}
-            />
-          </TextFieldWrapper>
-          <TextFieldWrapper>
-            <TextInput
-              {...register('annualGasUsage')}
+              {...register('annualGasUsage', {
+                valueAsNumber: true,
+              })}
               isInvalid={!!errors.annualGasUsage}
               label="Gas annual usage in KWH"
               errorMessage={errors.annualGasUsage?.message}

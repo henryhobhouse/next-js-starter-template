@@ -6,6 +6,7 @@ import { MonthlyBillsForm } from '../components/monthly-bills-form';
 import type { FormData } from '../components/monthly-bills-form';
 
 import Center from '../components/ui/center-top';
+import { MonthBillEstimates } from '../components/monthly-bill-estimates';
 
 const PageContainer = styled.div`
   box-sizing: border-box;
@@ -20,6 +21,7 @@ const Home: NextPage = () => {
     <PageContainer>
       <Center>
         <MonthlyBillsForm onFormSubmit={setFormValues} />
+        {formValues && <MonthBillEstimates usageData={formValues} />}
       </Center>
     </PageContainer>
   );
