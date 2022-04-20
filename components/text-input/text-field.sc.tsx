@@ -162,7 +162,7 @@ export const BottomBar = styled(Flex)<
 `;
 
 export const ErrorMessage = styled.div`
-  position: fixed;
+  position: absolute;
   padding-top: 52px;
   font-size: 10px;
   padding-left: 12px;
