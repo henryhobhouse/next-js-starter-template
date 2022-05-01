@@ -1,6 +1,7 @@
 import Document, { Head, Main, Html, NextScript } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
-import type { DocumentContext } from 'next/document';
+import type { DocumentContext, DocumentInitialProps } from 'next/document';
+import { Fragment } from 'react';
 
 /**
  * _document page. Customises the "Document" model to augment the app's HTML.
@@ -10,11 +11,9 @@ import type { DocumentContext } from 'next/document';
  * https://nextjs.org/docs/advanced-features/custom-document
  */
 class MyDocument extends Document {
-  static async getInitialProps(context: DocumentContext): Promise<{
-    styles: JSX.Element;
-    html: string;
-    head?: (JSX.Element | null)[] | undefined;
-  }> {
+  static async getInitialProps(
+    context: DocumentContext,
+  ): Promise<DocumentInitialProps> {
     const sheet = new ServerStyleSheet();
     const originalRenderPage = context.renderPage;
 
@@ -28,12 +27,12 @@ class MyDocument extends Document {
       const initialProperties = await Document.getInitialProps(context);
       return {
         ...initialProperties,
-        styles: (
-          <>
+        styles: [
+          <Fragment key="1">
             {initialProperties.styles}
             {sheet.getStyleElement()}
-          </>
-        ),
+          </Fragment>,
+        ],
       };
     } finally {
       sheet.seal();
