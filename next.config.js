@@ -5,5 +5,4 @@ module.exports = {
     styledComponents: true,
   },
   swcMinify: true,
-  webpack5: true,
 };
